@@ -24,7 +24,7 @@ backg = pygame.Surface((SCR_WID, SCR_HEI))
 
 
 def main():
-    backgscale = pygame.transform.scale(backg,(SCR_WID, SCR_HEI))
+    backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
 
     global player
     player = AIPlayer("player1", screen, SCR_HEI, SCR_WID)
@@ -38,32 +38,33 @@ def main():
     ball = Ball(screen, SCR_HEI, SCR_WID, player, enemy)
     Call.add(ball)
 
-    i = 0
+    previous_screen = None
     while True:
 
-            for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        print("Game exited by user")
-                        exit()
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    print("Game exited by user")
+                    exit()
 
-            screen.blit(backg, (0, 0))
-            got.update()
-            Call.update()
-            backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
-            got.draw(screen)
-            Call.draw(screen)
-            screen_np = pygame.surfarray.array2d(screen).flatten()
-            player.movement(screen_np, i)
-            enemy.movement()
-            ball.movement()
-            player.draw()
-            enemy.draw()
-            enemy.scoring()
-            player.scoring()
+        screen.blit(backg, (0, 0))
+        got.update()
+        Call.update()
+        backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
+        got.draw(screen)
+        Call.draw(screen)
+        player.movement(previous_screen)
+        enemy.movement()
+        ball.movement()
+        player.draw()
+        enemy.draw()
+        screen_np = pygame.surfarray.array2d(screen).flatten()
+        previous_screen = screen_np
+        #pygame.image.save(screen, "pong_screenshots/self_pong_frame_{0}.jpeg".format(i))
+        enemy.scoring()
+        player.scoring()
 
-            pygame.display.flip()
-            clock.tick(FPS)
-            i += 1
+        pygame.display.flip()
+        clock.tick(FPS)
 
 if __name__ == "__main__":
     main()

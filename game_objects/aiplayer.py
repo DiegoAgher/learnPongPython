@@ -6,7 +6,6 @@ from game_objects.player import Player
 
 class AIPlayer(Player):
     def __init__(self, name, screen, screen_height, screen_width):
-        pygame.sprite.Sprite.__init__(self)
         Player.__init__(self, name, screen, screen_height, screen_width)
         self.predictive_model = joblib.load('ElasticNet.pkl')
         self.y_mean = joblib.load('ymean.pkl')
@@ -26,10 +25,8 @@ class AIPlayer(Player):
                 print ("Player 2 wins!")
                 exit()
 
-    def movement(self, screen_np, counter):
-        if counter < 20:
-            self.y = self.y
-        else:
+    def movement(self, screen_np):
+        if screen_np is not None:
             model = self.predictive_model
             centered_data = (screen_np - self.x_mean).reshape(1, -1)
             prediction = model.predict(centered_data)

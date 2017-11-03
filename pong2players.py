@@ -1,7 +1,6 @@
 import pygame
 import numpy as np
 from pygame.locals import *
-from game_objects.player import Player
 from game_objects.training_player import TrainPlayer
 from game_objects.ball import Ball
 from game_objects.block import Block
@@ -40,37 +39,34 @@ def main():
     Call.add(ball)
 
     screen_data = []
+    i = 0
     while True:
 
-            for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                            print("Game exited by user")
-                            exit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                print("Game exited by user")
+                exit()
 
-            screen.blit(backg, (0, 0))
-            got.update()
-            Call.update()
-            backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
-            got.draw(screen)
-            Call.draw(screen)
-            player.movement()
-            enemy.movement()
-            ball.movement()
+        screen.blit(backg, (0, 0))
+        got.update()
+        Call.update()
+        backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
+        got.draw(screen)
+        Call.draw(screen)
+        player.movement()
+        enemy.movement()
+        ball.movement()
+        player.draw()
+        enemy.draw()
+        screen_np = pygame.surfarray.array2d(screen).flatten()
+        screen_np = np.append(screen_np, player.y)
+        screen_data.append(screen_np)
+        player.scoring(screen_data)
+        enemy.scoring(screen_data)
 
-            player.draw()
-            screen_np = pygame.surfarray.array2d(screen).flatten()                                                                                                           
-            screen_np = np.append(screen_np, player.y)                                                                                                                       
-            screen_data.append(screen_np)
-            player.scoring(screen_data)
-
-            enemy.draw()
-            screen_np = pygame.surfarray.array2d(screen).flatten()                                                                                                           
-            screen_np = np.append(screen_np, player.y)                                                                                                                       
-            screen_data.append(screen_np)
-            enemy.scoring(screen_data)
-
-            pygame.display.flip()
-            clock.tick(FPS)
+        pygame.display.flip()
+        clock.tick(FPS)
+        i += 1
 
 if __name__ == "__main__":
     main()
