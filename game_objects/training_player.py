@@ -1,6 +1,8 @@
 import numpy as np
+import h5py
 import pygame
 from pygame.locals import *
+from datetime import datetime
 
 
 class TrainPlayer(pygame.sprite.Sprite):
@@ -26,15 +28,37 @@ class TrainPlayer(pygame.sprite.Sprite):
             self.screen.blit(scoreBlit, (32, 16))
             if self.score == 2:
                 print ("player 1 wins!")
-                np.savetxt('pong_data/screen_data.csv',
-                           screen_data, delimiter=',')
+                training_id = datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
+                training_id = training_id.strip().replace(" ", "")
+                data_file = (h5py.File("pong_data/training_data/{}".
+                                       format(training_id)))
+                dataset = (data_file.
+                           create_dataset(
+                            'train_{}'.format(training_id),
+                            (len(screen_data), screen_data[0].shape[0]),
+                            dtype='f'))
+                for index, vector in enumerate(screen_data):
+                    dataset[index] = vector
+
+                data_file.close()
                 exit()
         elif self.name == "player2":
             self.screen.blit(scoreBlit, (self.SCR_HEI + 92, 16))
             if self.score == 2:
                 print ("Player 2 wins!")
-                np.savetxt('pong_data/screen_data.csv',
-                           screen_data, delimiter=',')
+                training_id = datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
+                training_id = training_id.strip().replace(" ", "")
+                data_file = (h5py.File("pong_data/training_data/{}".
+                                       format(training_id)))
+                dataset = (data_file.
+                           create_dataset(
+                            'train_{}'.format(training_id),
+                            (len(screen_data), screen_data[0].shape[0]),
+                            dtype='f'))
+                for index, vector in enumerate(screen_data):
+                    dataset[index] = vector
+
+                data_file.close()
                 exit()
 
     def movement(self):
