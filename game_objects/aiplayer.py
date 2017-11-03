@@ -16,12 +16,12 @@ class AIPlayer(Player):
                                           1, (255, 255, 255))
         if self.name == "player1":
             self.screen.blit(scoreBlit, (32, 16))
-            if self.score == 2:
+            if self.score == 5:
                 print ("player 1 wins!")
                 exit()
         elif self.name == "player2":
             self.screen.blit(scoreBlit, (self.SCR_HEI + 92, 16))
-            if self.score == 2:
+            if self.score == 5:
                 print ("Player 2 wins!")
                 exit()
 
