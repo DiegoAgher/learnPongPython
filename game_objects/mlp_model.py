@@ -15,21 +15,16 @@ class TensorFlowMLP(object):
             input_data = tf.placeholder(tf.float32, [None, (400 * 400)],
                                         name='input_data')
             #with tf.variable_scope('hidden1'):
-            w1 = tf.Variable(tf.random_normal((400 * 400, 1000)),
-                             name='w1')
-            b1 = tf.Variable(np.zeros((1000,)),
-                             name='b1', dtype=tf.float32)
+            w1 = tf.get_variable(shape=[400 * 400, 1000], name='w1')
+            b1 = tf.get_variable(shape=[1000, ], name='b1')
 
             #with tf.variable_scope('hidden2'):
-            w2 = tf.Variable(tf.random_normal((1000, 400)),
-                             name='w2')
-            b2 = tf.Variable(np.zeros((400,)),
-                             name='b2', dtype=tf.float32)
+            w2 = tf.get_variable(shape=[1000, 400], name='w2')
+            b2 = tf.get_variable(shape=[400, ], name='b2')
 
             #with tf.variable_scope('output'):
-            w_output = tf.Variable(tf.random_normal([400, 1]),
-                                   name='w_output')
-            b_output = tf.Variable(np.zeros((1,)), dtype=tf.float32)
+            w_output = tf.get_variable(shape=[400, 1], name='w_output')
+            b_output = tf.get_variable(shape=[1, ],name='b_output')
 
             preactivation1 = tf.matmul(input_data, w1) + b1
             hidden1 = tf.nn.relu(preactivation1)
@@ -48,11 +43,8 @@ class TensorFlowMLP(object):
         inference_feed_dict = {self.graph_elements['input_data']: data}
 
         with tf.Session(graph=self.tf_graph) as sess:
-            #saver = tf.train.import_meta_graph('./tf_pong.meta')
-            #saver.restore(sess, './tf_pong')
             self.saver.restore(sess, "./tf_pong1.ckpt")
-            print sess.run(self.graph_elements['w2'])
-            raise Exception
+            
             return sess.run(self.graph_elements['output'],
                             feed_dict=inference_feed_dict)
 
