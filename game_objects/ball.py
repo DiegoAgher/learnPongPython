@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+from numpy.random import randint
 
 
 class Ball(pygame.sprite.Sprite):
@@ -15,8 +16,9 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         self.rect.x, self.rect.y = self.SCR_WID / 2, self.SCR_HEI / 2
-        self.speed_x = -6
-        self.speed_y = 6
+        sign = randint(0, 1)
+        self.speed_x = (-1 ** sign) * 6
+        self.speed_y = (-1 ** sign) * 6
         self.size = 8
 
     def restart(self):
