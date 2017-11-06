@@ -4,7 +4,7 @@ from tf_utils import reset_graph, build_two_layers_mlp_inference
 
 
 class TensorFlowMLP(object):
-    def __init__(self, graph_method):
+    def __init__(self):
         reset_graph()
         self.graph_elements, self.tf_graph, self.saver = self.buildmlp()
 
@@ -22,7 +22,7 @@ class TensorFlowMLP(object):
             b2 = tf.get_variable(shape=[400, ], name='b2')
 
             w_output = tf.get_variable(shape=[400, 1], name='w_output')
-            b_output = tf.get_variable(shape=[1, ],name='b_output')
+            b_output = tf.get_variable(shape=[1, ], name='b_output')
 
             preactivation1 = tf.matmul(input_data, w1) + b1
             hidden1 = tf.nn.relu(preactivation1)
@@ -47,4 +47,4 @@ class TensorFlowMLP(object):
                             feed_dict=inference_feed_dict)
 
 
-MLP_model = TensorFlowMLP(build_two_layers_mlp_inference)
+MLP_model = TensorFlowMLP()
