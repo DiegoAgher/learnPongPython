@@ -47,20 +47,27 @@ def main():
                 print("Game exited by user")
                 exit()
 
+        keys = pygame.key.get_pressed()
+        # if keys[pygame.K_w]:
+        #    pressed = 'up'
+        # elif keys[pygame.K_s]:
+        #    pressed = 'down'
         screen.blit(backg, (0, 0))
         got.update()
         Call.update()
         backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
         got.draw(screen)
         Call.draw(screen)
+        #print "ball x, y: ", ball.rect.x, ball.rect.y
+        player.draw()
+        enemy.draw()
+        if ball.rect.x <= 200:
+            screen_np = pygame.surfarray.array2d(screen)[32:SCR_WID - 16, :]
+            screen_np = np.append(screen_np.flatten(), player.y)
+            screen_data.append(screen_np)
         player.movement()
         enemy.movement()
         ball.movement()
-        player.draw()
-        enemy.draw()
-        screen_np = pygame.surfarray.array2d(screen).flatten()
-        screen_np = np.append(screen_np, player.y)
-        screen_data.append(screen_np)
         player.scoring(screen_data)
         enemy.scoring(screen_data)
 

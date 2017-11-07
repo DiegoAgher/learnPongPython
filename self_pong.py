@@ -1,12 +1,15 @@
 import h5py
+import numpy as np
 import pygame
 from pygame.locals import *
+from sklearn.externals import joblib
 from game_objects.player import Player
 from game_objects.aiplayer import AIPlayer, MLPlayer, Conv2DPlayer
 from game_objects.block import Block
 from game_objects.ball import Ball
 
 SCR_WID, SCR_HEI = 400, 400
+x_mean = joblib.load('x_mean.pkl')
 screen = pygame.display.set_mode((SCR_WID, SCR_HEI))
 pygame.display.set_caption("Pong")
 pygame.font.init()
@@ -27,8 +30,17 @@ backg = pygame.Surface((SCR_WID, SCR_HEI))
 def main():
     backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
 
+    ai_player = 'linear'
     global player
-    player = Conv2DPlayer("player1", screen, SCR_HEI, SCR_WID)
+    if ai_player == 'conv':
+        player = Conv2DPlayer("player1", screen, SCR_HEI, SCR_WID)
+        SCREEN_REDUCE = 0
+    elif ai_player == 'linear':
+        player = AIPlayer("player1", screen, SCR_HEI, SCR_WID)
+        SCREEN_REDUCE = 16
+    elif ai_player == 'mlp':
+        player = MLPlayer("player1", screen, SCR_HEI, SCR_WID)
+        SCREEN_REDUCE = 16
 
     global enemy
     enemy = Player("player2", screen, SCR_HEI, SCR_WID)
@@ -39,9 +51,8 @@ def main():
     ball = Ball(screen, SCR_HEI, SCR_WID, player, enemy)
     Call.add(ball)
 
-    import numpy as np
-    previous_screen = None
-    screen_np = None
+    prev_screen_1 = None
+    prev_screen_2 = None
     i = 0
     while True:
 
@@ -56,21 +67,27 @@ def main():
         backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
         got.draw(screen)
         Call.draw(screen)
-        player.movement(screen_np)
-        enemy.movement()
-        ball.movement()
-        print "ball ", ball.rect.y
+        screen_np = pygame.surfarray.array2d(screen)[32:SCR_WID - SCREEN_REDUCE,
+                                                     :]
+        screen_np = screen_np.flatten().reshape(1, -1) - x_mean
+        prev_screen_1 = screen_np
+        prev_screen_2 = prev_screen_1
         player.draw()
         enemy.draw()
-        screen_np = pygame.surfarray.array2d(screen).flatten().reshape(1, -1)
-        first_frames = np.append(screen_np, player.y)
-        #pygame.image.save(screen, "pong_screenshots/self_pong_frame_{0}.jpeg".format(i))
+        if i % 3 == 2:
+
+            screen_sequence = np.concatenate([prev_screen_2, prev_screen_1,
+                                              screen_np], axis=1)
+            #np.savetxt(X=np.append(screen_sequence, player.y),
+            #           fname='sequence0.csv', delimiter=',')
+            player.movement(screen_sequence)
+
+        else:
+            player.movement(None)
+        enemy.movement()
+        ball.movement()
         enemy.scoring()
         player.scoring()
-        #np.savetxt(X=first_frames, fname='first_frames_{0}.csv'.format(i),
-         #          delimiter=',')
-        #if i > 2:
-        #    raise Exception
         i += 1
         pygame.display.flip()
         clock.tick(FPS)
