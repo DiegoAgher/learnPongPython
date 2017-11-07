@@ -21,7 +21,7 @@ for file_number, file_id in enumerate(training_sets[-1:]):
 
 del current_file
 
-training_data = training_data[1:, :]
+training_data = training_data[1:, :950]
 
 
 x_center = training_data[:, :-1] - training_data[:, :-1].mean()
@@ -37,7 +37,7 @@ joblib.dump(x_mean, 'x_mean.pkl')
 joblib.dump(y_mean, 'ymean.pkl')
 
 
-sequential_data = build_sequential_data_from_frames(x_center, y_center, 2)
+sequential_data = build_sequential_data_from_frames(x_center, y_center, 3)
 
 del x_center, y_center
 
@@ -46,20 +46,15 @@ y_sequential = sequential_data[:, -1]
 
 del sequential_data
 
-X_train, X_test, y_train, y_test = train_test_split(x_sequential, y_sequential)
-
-del x_sequential, y_sequential
-
-
-batch_size = 32
-num_epochs = 2
+batch_size = 10
+num_epochs = 3
 drop_prob_1 = 0.5
 drop_prob_2 = 0.5 
-hidden_size_1 = X_train.shape[1] / 2
+hidden_size_1 = x_sequential.shape[1] / 2
 hidden_size_2 = hidden_size_1 / 2
 
 
-input_placeholder = Input(shape=(X_train.shape[1],))
+input_placeholder = Input(shape=(x_sequential.shape[1],))
 hidden1 = Dense(hidden_size_1, activation='relu')(input_placeholder)
 drop_out1 = Dropout(drop_prob_1)(hidden1)
 hidden2 = Dense(hidden_size_2, activation='relu')(drop_out1)
@@ -73,12 +68,12 @@ model.compile(loss='mean_squared_error',
               metrics=['mae'])
 
 
-model.fit(X_train, y_train,             
+model.fit(x_sequential, y_sequential,             
           batch_size=batch_size, epochs=num_epochs,
           verbose=1, validation_split=0.1)
 
 
-model.evaluate(X_test, y_test, verbose=1)
+model.evaluate(x_sequential, y_sequential, verbose=1)
 
 model.save('pong_2_layers_mlp.h5')
 
