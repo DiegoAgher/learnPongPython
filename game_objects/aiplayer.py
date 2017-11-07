@@ -10,7 +10,7 @@ from game_objects.mlp_model import MLP_model
 class AIPlayer(Player):
     def __init__(self, name, screen, screen_height, screen_width):
         Player.__init__(self, name, screen, screen_height, screen_width)
-        self.predictive_model = joblib.load('ElasticNet.pkl')
+        self.predictive_model = joblib.load('ElasticNetSeq.pkl')
         self.y_mean = joblib.load('ymean.pkl')
         self.x_mean = joblib.load('x_mean.pkl')
 
@@ -31,9 +31,7 @@ class AIPlayer(Player):
     def movement(self, screen_np):
         if screen_np is not None:
             model = self.predictive_model
-            centered_data = (screen_np - self.x_mean).reshape(1, -1)
-            prediction = model.predict(centered_data)
-            print("centered", centered_data.mean())
+            prediction = model.predict(screen_np)
             self.y = prediction + self.y_mean
             print(self.y)
 
@@ -41,7 +39,7 @@ class AIPlayer(Player):
 class MLPlayer(Player):
     def __init__(self, name, screen, screen_height, screen_width):
         Player.__init__(self, name, screen, screen_height, screen_width)
-        self.predictive_model = MLP_model
+        self.predictive_model = load_model('pong_2_layers_mlp.h5')
         self.y_mean = joblib.load('ymean.pkl')
         self.x_mean = joblib.load('x_mean.pkl')
 
@@ -62,8 +60,7 @@ class MLPlayer(Player):
     def movement(self, screen_np):
         if screen_np is not None:
             model = self.predictive_model
-            centered_data = (screen_np - self.x_mean)
-            prediction = model.predict(centered_data)
+            prediction = model.predict(screen_np)
             self.y = prediction + self.y_mean
             print("predicted pos ",  self.y)
 
