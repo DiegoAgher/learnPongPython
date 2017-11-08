@@ -18,8 +18,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = self.SCR_WID / 2, self.SCR_HEI / 2
         sign_x = randint(0, 1)
         sign_y = randint(0, 1)
-        self.speed_x = (-1 ** sign_x) * 3
-        self.speed_y = (-1 ** sign_y) * 3
+        self.speed_x = (-1 ** sign_x) * 6
+        self.speed_y = (-1 ** sign_y) * 6
         self.size = 8
 
     def restart(self):
@@ -43,12 +43,19 @@ class Ball(pygame.sprite.Sprite):
             self.speed_x = 3
             self.player2.score += 1
 
-        for n in range(-self.size, self.player1.padHei):
-            if self.rect.y == self.player1.y + n:
-                if self.rect.x <= self.player1.x + self.player1.padWid:
-                    self.speed_x *= -1
-                    break
-            n += 1
+        if self.rect.x <= self.player1.x + self.player1.padWid:
+            print "primer if"
+            if (self.player1.y - self.player1.padHei <= self.rect.y
+                    <= self.player1.y + self.player1.padHei):
+                print "segundo if"
+                self.speed_x *= -1
+
+        # for n in range(-self.size, self.player1.padHei):
+        #     if self.rect.y == self.player1.y + n:
+        #         if self.rect.x <= self.player1.x + self.player1.padWid:
+        #             self.speed_x *= -1
+        #             break
+        #     n += 1
         for n in range(-self.size, self.player2.padHei):
             if self.rect.y == self.player2.y + n:
                 if self.rect.x >= self.player2.x - self.player1.padWid:
