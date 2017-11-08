@@ -60,23 +60,11 @@ class Conv2DPlayer(Player):
                   data and then train the model with one of the training
                   scripts, eg: training/elasticnet.py"""
 
-    def scoring(self):
-        scoreBlit = self.scoreFont.render(str(self.score),
-                                          1, (255, 255, 255))
-        if self.name == "player1":
-            self.screen.blit(scoreBlit, (32, 16))
-            if self.score == 5:
-                print ("player 1 wins!")
-                exit()
-        elif self.name == "player2":
-            self.screen.blit(scoreBlit, (self.SCR_HEI + 92, 16))
-            if self.score == 5:
-                print ("Player 2 wins!")
-                exit()
-
     def movement(self, screen_np):
         if screen_np is not None:
-            centered_data = np.reshape(screen_np, (1, 400, 400, 3))
+            frame_length = screen_np.shape[1]
+            centered_data = np.reshape(screen_np, (1, frame_length / (400 * 3),
+                                                   400, 3))
             model = self.predictive_model
             prediction = model.predict(centered_data)
             self.y = prediction + self.y_mean
