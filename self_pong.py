@@ -45,7 +45,6 @@ def main():
     elif ai_player == 'linear':
         player = ElasticNetPlayer("player1", screen, SCR_HEI, SCR_WID)
 
-
     global enemy
     enemy = Player("player2", screen, SCR_HEI, SCR_WID)
 
