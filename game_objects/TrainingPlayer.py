@@ -19,7 +19,7 @@ class TrainPlayer(Player):
                 print ("player 1 wins!")
                 training_id = datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
                 training_id = training_id.strip().replace(" ", "")
-                data_file = (h5py.File("pong_data/training_data/{}".
+                data_file = (h5py.File("pong_data/training_data/{}.h5".
                                        format(training_id)))
                 dataset = (data_file.
                            create_dataset(
@@ -37,7 +37,7 @@ class TrainPlayer(Player):
                 print ("Player 2 wins!")
                 training_id = datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
                 training_id = training_id.strip().replace(" ", "")
-                data_file = (h5py.File("pong_data/training_data/{}".
+                data_file = (h5py.File("pong_data/training_data/{}.h5".
                                        format(training_id)))
                 dataset = (data_file.
                            create_dataset(
