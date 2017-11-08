@@ -4,12 +4,15 @@ import pygame
 from pygame.locals import *
 from sklearn.externals import joblib
 from game_objects.player import Player
-from game_objects.aiplayer import AIPlayer, MLPlayer, Conv2DPlayer
+from game_objects.AIPlayers import ElasticNetPlayer, Conv2DPlayer
 from game_objects.block import Block
 from game_objects.ball import Ball
 
+MODELS_PARAMETERS_DIR = 'pong_data/models_parameters/'
+x_mean_dir = MODELS_PARAMETERS_DIR + 'x_mean.pkl'
+x_mean = joblib.load(x_mean_dir)
+
 SCR_WID, SCR_HEI = 400, 400
-x_mean = joblib.load('x_mean.pkl')
 screen = pygame.display.set_mode((SCR_WID, SCR_HEI))
 pygame.display.set_caption("Pong")
 pygame.font.init()
@@ -31,16 +34,14 @@ def main():
     backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
 
     ai_player = 'linear'
+    SCREEN_REDUCE = 16
+
     global player
     if ai_player == 'conv':
         player = Conv2DPlayer("player1", screen, SCR_HEI, SCR_WID)
-        SCREEN_REDUCE = 0
     elif ai_player == 'linear':
-        player = AIPlayer("player1", screen, SCR_HEI, SCR_WID)
-        SCREEN_REDUCE = 16
-    elif ai_player == 'mlp':
-        player = MLPlayer("player1", screen, SCR_HEI, SCR_WID)
-        SCREEN_REDUCE = 16
+        player = ElasticNetPlayer("player1", screen, SCR_HEI, SCR_WID)
+
 
     global enemy
     enemy = Player("player2", screen, SCR_HEI, SCR_WID)
@@ -67,19 +68,19 @@ def main():
         backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
         got.draw(screen)
         Call.draw(screen)
-        screen_np = pygame.surfarray.array2d(screen)[32:SCR_WID - SCREEN_REDUCE,
-                                                     :]
+        screen_np = (pygame.surfarray.array2d(screen)
+                     [SCREEN_REDUCE * 2:SCR_WID - SCREEN_REDUCE, :])
         screen_np = screen_np.flatten().reshape(1, -1) - x_mean
-        prev_screen_1 = screen_np
         prev_screen_2 = prev_screen_1
+        prev_screen_1 = screen_np
+
         player.draw()
         enemy.draw()
         if i % 3 == 2:
 
             screen_sequence = np.concatenate([prev_screen_2, prev_screen_1,
                                               screen_np], axis=1)
-            #np.savetxt(X=np.append(screen_sequence, player.y),
-            #           fname='sequence0.csv', delimiter=',')
+
             player.movement(screen_sequence)
 
         else:
