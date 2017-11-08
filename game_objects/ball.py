@@ -4,7 +4,7 @@ from numpy.random import randint
 
 
 class Ball(pygame.sprite.Sprite):
-    image = pygame.Surface((10, 10))
+    image = pygame.Surface((8, 8))
     image.fill((255, 255, 255))
 
     def __init__(self, screen, screen_height, screen_width, player1, player2):
@@ -16,10 +16,11 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         self.rect.x, self.rect.y = self.SCR_WID / 2, self.SCR_HEI / 2
-        sign_x = randint(0, 1)
-        sign_y = randint(0, 1)
-        self.speed_x = (-1 ** sign_x) * 3
-        self.speed_y = (-1 ** sign_y) * 3
+        sign_x = randint(0, 2)
+        sign_y = randint(0, 2)
+        speed = randint(5, 7)
+        self.speed_x = (-1 ** sign_x) * speed
+        self.speed_y = (-1 ** sign_y) * speed
         self.size = 8
 
     def restart(self):
@@ -43,26 +44,17 @@ class Ball(pygame.sprite.Sprite):
             self.speed_x = 3
             self.player2.score += 1
 
-        if self.rect.x <= self.player1.x + self.player1.padWid:
-            if (self.player1.y - self.player1.padHei / 2 <= self.rect.y
-                    <= self.player1.y + self.player1.padHei / 2):
+        if (self.player1.x - self.player1.padWid <= self.rect.x
+           <= self.player1.x + self.player1.padWid):
+
+            if (self.player1.y - (self.player1.padHei / 2) + 22 <= self.rect.y
+                    <= self.player1.y + self.player1.padHei):
                 self.speed_x *= -1
 
-        if self.rect.x <= self.player1.x + self.player1.padWid:
-            if (self.player2.y - self.player2.padHei / 2 <= self.rect.y
-                    <= self.player2.y + self.player2.padHei / 2):
+        if self.rect.x >= self.player2.x - self.player2.padWid:
+            if (self.player2.y - (self.player2.padHei / 2) + 22 <= self.rect.y
+                    <= self.player2.y + self.player2.padHei):
                 self.speed_x *= -1
-        # for n in range(-self.size, self.player1.padHei):
-        #     if self.rect.y == self.player1.y + n:
-        #         if self.rect.x <= self.player1.x + self.player1.padWid:
-        #             self.speed_x *= -1
-        #             break
-        #     n += 1
-        for n in range(-self.size, self.player2.padHei):
-            if self.rect.y == self.player2.y + n:
-                if self.rect.x >= self.player2.x - self.player1.padWid:
-                    self.speed_x *= -1
-                    break
 
     def draw(self):
         pygame.draw.rect(self.screen, (255, 255, 255),
