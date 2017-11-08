@@ -43,7 +43,6 @@ class ElasticNetPlayer(Player):
             model = self.predictive_model
             prediction = model.predict(screen_np)
             self.y = prediction + self.y_mean
-            print(self.y)
 
 
 class Conv2DPlayer(Player):
