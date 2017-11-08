@@ -45,7 +45,7 @@ x_sequential = np.reshape(x_sequential, (x_sequential.shape[0],
                                          frame_length/400, 400, 3))
 
 
-num_train, height, width, channels = x.shape
+num_train, height, width, channels = x_sequential.shape
 
 X_train, X_test, y_train, y_test = train_test_split(x_sequential, y_sequential)
 del x_sequential, y_sequential
