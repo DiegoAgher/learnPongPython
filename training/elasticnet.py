@@ -10,12 +10,14 @@ MODELS_PARAMETERS_DIR = 'pong_data/models_parameters/'
 x_mean_dir = MODELS_PARAMETERS_DIR + 'x_mean.pkl'
 y_mean_dir = MODELS_PARAMETERS_DIR + 'y_mean.pkl'
 
-training_sets = os.listdir('pong_data/training_data')
+TRAINING_DATA_DIR = 'pong_data/training_data'
+
+training_sets = os.listdir(TRAINING_DATA_DIR)
 
 training_data = np.zeros((1, 140801))
 for ii, file_id in enumerate(training_sets[-2:]):
     print(ii)
-    current_file = h5py.File('pong_data/training_data/{}.h5'.format(file_id),
+    current_file = h5py.File(TRAINING_DATA_DIR + '/{}.h5'.format(file_id),
                              'r')
     current_data = current_file['train_' + file_id][:]
     training_data = np.concatenate([training_data, current_data])
