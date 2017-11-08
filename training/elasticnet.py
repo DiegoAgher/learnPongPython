@@ -6,13 +6,17 @@ from sklearn.linear_model import ElasticNet, ElasticNetCV
 from sklearn.model_selection import train_test_split
 from training.utils.sequential_data import build_sequential_data_from_frames
 
+MODELS_PARAMETERS_DIR = 'pong_data/models_parameters/'
+x_mean_dir = MODELS_PARAMETERS_DIR + 'x_mean.pkl'
+y_mean_dir = MODELS_PARAMETERS_DIR + 'y_mean.pkl'
 
 training_sets = os.listdir('pong_data/training_data')
 
 training_data = np.zeros((1, 140801))
 for ii, file_id in enumerate(training_sets[-2:]):
     print(ii)
-    current_file = h5py.File('pong_data/training_data/' + file_id, 'r')
+    current_file = h5py.File('pong_data/training_data/{}.h5'.format(file_id),
+                             'r')
     current_data = current_file['train_' + file_id][:]
     training_data = np.concatenate([training_data, current_data])
 
@@ -25,8 +29,8 @@ frame_length = x.shape[1]
 x_mean = x.mean()
 y_mean = y.mean()
 
-joblib.dump(x_mean, 'x_mean.pkl')
-joblib.dump(y_mean, 'ymean.pkl')
+joblib.dump(x_mean, x_mean_dir)
+joblib.dump(y_mean, y_mean_dir)
 
 sequential_data = build_sequential_data_from_frames(x - x_mean,
                                                     y - y_mean, 3)
