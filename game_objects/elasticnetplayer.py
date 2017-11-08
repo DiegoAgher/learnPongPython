@@ -6,13 +6,24 @@ from keras.models import load_model
 from game_objects.player import Player
 from game_objects.mlp_model import MLP_model
 
+MODELS_PARAMETERS_DIR = 'pong_data/models_parameters/'
+x_mean_dir = MODELS_PARAMETERS_DIR + 'x_mean.pkl'
+y_mean_dir = MODELS_PARAMETERS_DIR + 'y_mean.pkl'
 
-class AIPlayer(Player):
+
+class ElasticNetPlayer(Player):
     def __init__(self, name, screen, screen_height, screen_width):
         Player.__init__(self, name, screen, screen_height, screen_width)
-        self.predictive_model = joblib.load('ElasticNetSeq.pkl')
-        self.y_mean = joblib.load('ymean.pkl')
-        self.x_mean = joblib.load('x_mean.pkl')
+        try:
+            self.predictive_model = joblib.load('ElasticNetSeq.pkl')
+            self.y_mean = joblib.load(y_mean_dir)
+            self.x_mean = joblib.load(x_mean_dir)
+        except Exception as e:
+            print Exception
+            print "Models or parameters above not found, train the model first"
+            print """To train the model use pong2players.py script to gather
+                  data and then train the model with one of the training
+                  scripts, eg: training/elasticnet.py"""
 
     def scoring(self):
         scoreBlit = self.scoreFont.render(str(self.score),
