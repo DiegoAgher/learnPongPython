@@ -14,13 +14,15 @@ TRAINING_DATA_DIR = 'pong_data/training_data'
 
 training_sets = os.listdir(TRAINING_DATA_DIR)
 
-training_data = np.zeros((1, 140801))
-for ii, file_id in enumerate(training_sets[-2:]):
-    print(ii)
-    current_file = h5py.File(TRAINING_DATA_DIR + '/{}.h5'.format(file_id),
-                             'r')
-    current_data = current_file['train_' + file_id][:]
-    training_data = np.concatenate([training_data, current_data])
+for i, file_id in enumerate(training_sets[-3:]):
+    current_file = h5py.File(TRAINING_DATA_DIR + '/{}'.format(file_id), 'r')
+    dataset_id = 'train_' + file_id.replace('.h5', '')
+    if i == 0:
+        current_data = current_file[dataset_id][:]
+    else:
+        training_data = current_data
+        current_data = current_file[dataset_id][:]
+        training_data = np.concatenate([training_data, current_data])
 
 
 training_data = training_data[1:, :]
