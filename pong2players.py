@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 from pygame.locals import *
-from game_objects.training_player import TrainPlayer
+from game_objects.TrainingPlayer import TrainPlayer
 from game_objects.ball import Ball
 from game_objects.block import Block
 
@@ -40,6 +40,7 @@ def main():
 
     screen_data = []
     i = 0
+    SCREEN_REDUCE = 16
     while True:
 
         for event in pygame.event.get():
@@ -62,7 +63,8 @@ def main():
         player.draw()
         enemy.draw()
         if ball.rect.x <= 200:
-            screen_np = pygame.surfarray.array2d(screen)[32:SCR_WID - 16, :]
+            screen_np = (pygame.surfarray.array2d(screen)
+                         [SCREEN_REDUCE*2:SCR_WID - SCREEN_REDUCE, :])
             screen_np = np.append(screen_np.flatten(), player.y)
             screen_data.append(screen_np)
         player.movement()
