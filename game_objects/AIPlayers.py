@@ -49,9 +49,16 @@ class ElasticNetPlayer(Player):
 class Conv2DPlayer(Player):
     def __init__(self, name, screen, screen_height, screen_width):
         Player.__init__(self, name, screen, screen_height, screen_width)
-        self.predictive_model = load_model('pong_conv2d_full.h5')
-        self.y_mean = joblib.load('ymean.pkl')
-        self.x_mean = joblib.load('x_mean.pkl')
+        try:
+            self.predictive_model = load_model('pong_conv2d.h5')
+            self.y_mean = joblib.load(y_mean_dir)
+            self.x_mean = joblib.load(x_mean_dir)
+        except Exception as e:
+            print Exception
+            print "Models or parameters above not found, train the model first"
+            print """To train the model use pong2players.py script to gather
+                  data and then train the model with one of the training
+                  scripts, eg: training/elasticnet.py"""
 
     def scoring(self):
         scoreBlit = self.scoreFont.render(str(self.score),
