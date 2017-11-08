@@ -1,4 +1,4 @@
-import h5py
+import sys
 import numpy as np
 import pygame
 from pygame.locals import *
@@ -32,8 +32,11 @@ backg = pygame.Surface((SCR_WID, SCR_HEI))
 
 def main():
     backgscale = pygame.transform.scale(backg, (SCR_WID, SCR_HEI))
+    try:
+        ai_player = sys.argv[1]
+    except:
+        ai_player = 'linear'
 
-    ai_player = 'linear'
     SCREEN_REDUCE = 16
 
     global player
@@ -76,7 +79,7 @@ def main():
 
         player.draw()
         enemy.draw()
-        if i % 3 == 2:
+        if i > 2:
 
             screen_sequence = np.concatenate([prev_screen_2, prev_screen_1,
                                               screen_np], axis=1)
