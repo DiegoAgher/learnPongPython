@@ -68,7 +68,7 @@ class MLPlayer(Player):
 class Conv2DPlayer(Player):
     def __init__(self, name, screen, screen_height, screen_width):
         Player.__init__(self, name, screen, screen_height, screen_width)
-        self.predictive_model = load_model('pong_conv2d.h5')
+        self.predictive_model = load_model('pong_conv2d_full.h5')
         self.y_mean = joblib.load('ymean.pkl')
         self.x_mean = joblib.load('x_mean.pkl')
 
@@ -88,9 +88,7 @@ class Conv2DPlayer(Player):
 
     def movement(self, screen_np):
         if screen_np is not None:
-            centered_data = (screen_np - self.x_mean)
-            centered_data = np.reshape(centered_data, (1, 400, 400, 1))
+            centered_data = np.reshape(screen_np, (1, 400, 400, 3))
             model = self.predictive_model
             prediction = model.predict(centered_data)
             self.y = prediction + self.y_mean
-            print("predicted pos ",  self.y)
