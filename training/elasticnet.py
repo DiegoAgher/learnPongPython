@@ -15,6 +15,8 @@ TRAINING_DATA_DIR = 'pong_data/training_data'
 training_sets = os.listdir(TRAINING_DATA_DIR)
 
 for i, file_id in enumerate(training_sets[-3:]):
+    if not file_id.endswith('h5'):
+        continue
     current_file = h5py.File(TRAINING_DATA_DIR + '/{}'.format(file_id), 'r')
     dataset_id = 'train_' + file_id.replace('.h5', '')
     if i == 0:
