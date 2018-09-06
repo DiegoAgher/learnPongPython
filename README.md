@@ -8,7 +8,7 @@ run `pip install -r requirements.txt`
 
 # How to train my model and play against him?
 After installing the proper requirements.
-1. Gather data: run `python pong2player.py` use the up/down keys for player
+1. Gather data: run `python pong2players.py` use the up/down keys for player
 on the right, and w/s for player on the left. To save the data one will have to
 loose after 4 points.
 
